@@ -1,9 +1,11 @@
 #!/bin/bash
 #-------------------------------------------------------
+
 #-------------------------Creat_table-------------------
 function CreatTable ()
 {
 Tname=$(whiptail --inputbox "please enter table name" 10 30 3>&1 1>&2 2>&3)
+
 if [[ -f $Tname ]]
 then 
     whiptail --title "Error" --msgbox  "File aleardy exist !" 8 45
@@ -16,13 +18,28 @@ else
             att=$(whiptail --inputbox "attribut of $i "  15 30 3>&1 1>&2 2>&3)
             datatyp=$(whiptail --inputbox "datatype of $i "  15 30 3>&1 1>&2 2>&3) 
                
+
             printf '%s%s\n'"$att,$datatyp" >>$Tname
             
-           (( i++ ))
-                    
+           (( i++ ))                 
       done
+#---------------------------------------restruct file-----------
+stru=$(awk -F , '{for (i=1; i<=NF; i++) a[i,NR]=$i
+        max=(max<NF?NF:max)}
+        END {for (i=1; i<=max; i++)
+              {for (j=1; j<=NR; j++) 
+                  printf "%s%s", a[i,j],   (j==NR?RS:FS)
+              }
+        }' $Tname)
+        printf "%s""$stru"  >$Tname
+#--------------------------------------------------------------
+      pkey=$(whiptail --inputbox "primary key "  15 30 3>&1 1>&2 2>&3)
        printf "\n">>$Tname
-       printf '%s%s\n'"$AttNumber,$Tname" >>file_name_att_num
+       
+#-----------------------------------------------
+  #          printf "$header" "$att" "$datatyp" 
+#-----------------------------------------------
+       printf '%s%s%s\n'"$AttNumber,$Tname,$pkey" >>file_name_att_num
        
       
            whiptail --title "not error" --msgbox  " file created sussfully" 8 45
@@ -61,27 +78,3 @@ function mainmenu()
  
 }
 mainmenu
-#-----------------test------------------------------
-function test () {
-divider===============================
-divider=$divider$divider
-
-header="\n %-10s %8s %10s\n"
-format=" %-10s %08d %10s\n"
-
-width=43
-i=1
-while [ $i -le 2 ]
-do
-printf "$header" "TT" "DATATYPE" "COLOR" 
-
-printf "%$width.${width}s\n" "$divider"
-
-printf "$format" \
-Triangle 13  red 20 \
-Oval 204449 "dark blue" 65.656 \
-Square 3145 orange .7
-(( i++ ))
-done
-}
-#test
