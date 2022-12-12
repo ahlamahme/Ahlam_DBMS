@@ -16,12 +16,9 @@ then
          do             
             meta=$(whiptail --inputbox "attribut of $j "  15 30 3>&1 1>&2 2>&3)
 #-------------------------------------------check primary----
-              if [[ $j == 1 ]]
+              if [[ $j == 1 ]];
               then 
-                con2=$(awk -F, '{ if ($1 == "'$meta'" )             
-                                {print "error"}           
-                               }' $NameTableToInsert) 
-                printf "%s""$con2"  >>container2               
+                awk '{print ($2=="'$meta'")?"same":"not-same"}' $NameTableToInsert              
               fi
 #------------------------------------------------------------
                printf "%s,""$meta" >>$NameTableToInsert
